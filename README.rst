@@ -9,7 +9,7 @@ Recipes
 
 Find used plugins in all projects
 
-.. code-block:: bash
+.. code:: bash
     find . -name '*.als' -exec bash -c 'echo "{}"; alscli list-plugins "{}"' \; | tee ~/work/sandbox/plugins.txt
 
 * Free software: MIT license
