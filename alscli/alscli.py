@@ -7,9 +7,13 @@ import xml.etree.cElementTree as etree
 import gzip
 
 
-def parse_als(fname):
+def extract_als(fname):
     with gzip.open(fname, 'rb') as f:
-        file_content = f.read()
+        return f.read()
+
+
+def parse_als(fname):
+    file_content = extract_als(fname)
     root = etree.fromstring(file_content)
     return root
 

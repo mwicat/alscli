@@ -2,12 +2,16 @@
 
 """Console script for alscli."""
 
+import xml.etree.cElementTree as etree
 import logging
 import sys
 
 import click
 
-from .alscli import parse_als
+from .alscli import (
+    extract_als,
+    parse_als,
+)
 
 
 @click.group()
@@ -31,10 +35,22 @@ def list_plugins(ctx, als_path):
     plugin_nodes = root.findall('.//PluginDevice')
     plugin_names = set()
     for plugin_node in plugin_nodes:
-        plugin_name = plugin_node.find('.//PlugName').attrib['Value']
-        plugin_names.add(plugin_name)
+        pname_node = plugin_node.find('.//PlugName')
+        if pname_node is None:
+            pname_node = plugin_node.find('.//Name')
+        plugin_name = pname_node.attrib['Value']
+        if plugin_name:
+            plugin_names.add(plugin_name)
     for plugin_name in sorted(plugin_names):
         click.echo(plugin_name)
+    return 0
+
+
+@cli.command()
+@click.pass_context
+@click.argument('als_path')
+def dump(ctx, als_path):
+    sys.stdout.write(extract_als(als_path).decode('utf-8'))
     return 0
 
 
